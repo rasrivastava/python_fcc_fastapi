@@ -3,12 +3,12 @@
 ```
 from fastapi import FastAPI
 
-app = FastAPI()
+app = FastAPI() # FastAPI instance name
 
+@app.get("/") # decorator "@"; FastAPI instance name "app"; HTTP request method "get"; root path "/" 
+def printMessage(): # function name
+    return "Hello World" # return to the user
 
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
 ```
 
 ```
@@ -25,4 +25,25 @@ INFO:     127.0.0.1:56259 - "GET / HTTP/1.1" 200 OK
 - http://127.0.0.1:8000/
 ```
 {"message":"Hello World"}
+```
+
+```
+from fastapi import FastAPI
+
+app = FastAPI() # FastAPI instance name
+
+@app.get("/") # decorator "@"; FastAPI instance name "app"; HTTP request method "get"; root path "/" 
+def printMessage(): # function name
+    return "Hello World" # return to the user
+
+
+@app.get("/login") # # path "/login" -> is the path which has to gone in the URL
+def printLogin(): # function name
+    return "Logged In" # return to the user
+
+```
+
+- http://127.0.0.1:8000/login
+```
+"Logged In"
 ```
