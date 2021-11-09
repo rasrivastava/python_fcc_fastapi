@@ -129,3 +129,18 @@ INFO:     Application startup complete.
 INFO:     127.0.0.1:56705 - "POST /createposts HTTP/1.1" 200 OK
 WARNING:  WatchGodReload detected file change in '['/Users/rasrivas/personal/python_freecodecamp_sanjeev/fastapi/main.py']'. Reloading...
 ```
+
+- updating the `create_posts` methos
+
+```
+@apptest.post("/createposts")
+def create_posts(payLoad: dict = Body(...)): # calls fastapi.params; Get the body in a dict data type and store in a "payLoad" variable
+    print(payLoad)
+    return {"newpost": f"title {payLoad['title']} content: {payLoad['content']}"}
+```
+
+```
+INFO:     Application startup complete.
+{'title': 'top foods in varanasi', 'content': 'check out'}
+INFO:     127.0.0.1:56760 - "POST /createposts HTTP/1.1" 200 OK
+```
