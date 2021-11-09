@@ -85,3 +85,45 @@ INFO:     Application startup complete.
 INFO:     127.0.0.1:56415 - "GET /login HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56416 - "GET / HTTP/1.1" 200 OK
 ```
+
+--------------------------------------------------------------
+
+- added below data to the body for the `http://127.0.0.1:8000/createposts`  on the postman
+
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out"
+}
+```
+
+```
+from fastapi import FastAPI
+from fastapi.params import Body
+
+apptest = FastAPI()
+
+@apptest.get("/")
+def printMessage():
+    return "Welcome Family"
+
+
+@apptest.get("/posts")
+def printLogin():
+    return {"data": "this is your post"}
+
+
+@apptest.post("/createposts")
+def create_posts(payLoad: dict = Body(...)): # calls fastapi.params; Get the body in a dict data type and store in a "payLoad" variable
+    print(payLoad)
+    return {"message": "successfully posted"}
+```
+
+- terminal
+```
+Waiting for application startup.
+INFO:     Application startup complete.
+{'title': 'top foods in varanasi', 'content': 'check out'}
+INFO:     127.0.0.1:56705 - "POST /createposts HTTP/1.1" 200 OK
+WARNING:  WatchGodReload detected file change in '['/Users/rasrivas/personal/python_freecodecamp_sanjeev/fastapi/main.py']'. Reloading...
+```
