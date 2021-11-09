@@ -144,3 +144,11 @@ INFO:     Application startup complete.
 {'title': 'top foods in varanasi', 'content': 'check out'}
 INFO:     127.0.0.1:56760 - "POST /createposts HTTP/1.1" 200 OK
 ```
+
+- postman `http://127.0.0.1:8000/createposts` output
+
+```
+{
+    "newpost": "title top foods in varanasi content: check out"
+}
+```
