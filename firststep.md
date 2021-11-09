@@ -88,6 +88,8 @@ INFO:     127.0.0.1:56416 - "GET / HTTP/1.1" 200 OK
 
 --------------------------------------------------------------
 
+## Post Method usage
+
 - added below data to the body for the `http://127.0.0.1:8000/createposts`  on the postman
 
 ```
