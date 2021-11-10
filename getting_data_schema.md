@@ -131,4 +131,18 @@ True
 INFO:     127.0.0.1:59008 - "POST /createposts HTTP/1.1" 200 OK
 ```
 
-- if 
+- if we don't provide the `published` value then also it will return the True as it a default value set
+
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out"
+}
+```
+
+```
+INFO:     Application startup complete.
+title='top foods in varanasi' content='check out' published=True
+True
+INFO:     127.0.0.1:59133 - "POST /createposts HTTP/1.1" 200 OK
+```
