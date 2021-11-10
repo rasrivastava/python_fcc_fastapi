@@ -222,3 +222,31 @@ def get_post(id: int):
 
 - Now, if user provides a string this, it will generate a exception which can be handled.
 
+## Here we have a problem, suppose a user searches for id: 5 which does not exit, with the current logic it will return null everywhere it is used with status code "200" which might confuse
+
+`http://127.0.0.1:8000/posts/5` --> 200 error code
+
+```
+{
+    "post_details": "Here is post None"
+}
+```
+
+- Handling to code to return **404** error
+
+```
+from fastapi import FastAPI, Response
+
+...
+...
+
+
+@apptest.get("/posts/{id}")
+def get_post(id: int, response: Response):
+    post = find_post(id)
+    if not post:
+        response.status_code = 404
+    return {"post_details": f"Here is post {post}"}
+```
+
+`http://127.0.0.1:8000/posts/5` --> 404 error code
