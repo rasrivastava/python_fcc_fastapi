@@ -303,3 +303,16 @@ def get_post(id: int):
                             detail=f"post with id: {id} was not found")
     return {"post_details": f"Here is post {post}"}
 ```
+
+## The default status code is always 200, we can customize as per oue requirement
+
+- By using `status_code=status.HTTP_201_CREATED`
+
+```
+@apptest.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post):
+    post_dict = post.dict()
+    post_dict['id'] = randrange(0, 1000000)
+    my_posts.append(post_dict)
+    return {"data": post_dict}
+```
