@@ -191,5 +191,23 @@ def get_post(id):
   }
   ```
 
+- creating a function to handle it better
 
+```
+def find_post(id):
+    for p in my_posts:
+        if p["id"] == id:
+            return p
 
+@apptest.get("/posts/{id}")  # id : path parameter
+def get_post(id):
+    post = find_post(int(id))
+    return {"post_details": f"Here is post {post}"}
+```
+
+- postman --> `http://127.0.0.1:8000/posts/2` (GET)
+```
+{
+    "post_details": "Here is post {'title': 'title of post 2', 'content': 'content of post 2', 'id': 2}"
+}
+```
