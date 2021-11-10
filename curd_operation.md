@@ -371,3 +371,26 @@ def delete_post(id: int):
     ]
 }
 ```
+
+- as 204 does not return anything, we need to update the return type
+
+```
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    index = find_index_post(id)
+    my_posts.pop(index)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+- there is a glict we need to handle, when a id does not exists, we should inform
+
+```
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    index = find_index_post(id)
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    my_posts.pop(index)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
