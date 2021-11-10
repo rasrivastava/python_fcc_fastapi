@@ -62,8 +62,14 @@ def create_posts(new_post: Post):
 ```
 
 - Now, sending the data from Postman
+
+`http://127.0.0.1:8000/createposts --> POST method`
+
 ```
-http://127.0.0.1:8000/createposts --> POST
+{
+    "title": "top foods in varanasi",
+    "content": "check out"
+}
 ```
 
 - terminal
@@ -74,3 +80,27 @@ title='top foods in varanasi' content='check out'
 top foods in varanasi
 INFO:     127.0.0.1:58925 - "POST /createposts HTTP/1.1" 200 OK
 ```
+
+- suppose if we only send the below data
+
+```
+"title": "top foods in varanasi",
+```
+- it will through an error on Postman as well on CLI --> **status 422** and it says that **"msg"** is missing
+
+```
+{
+    "detail": [
+        {
+            "loc": [
+                "body",
+                "title"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        }
+    ]
+}
+```
+
+- CMD line: `INFO:     127.0.0.1:58948 - "POST /createposts HTTP/1.1" 422 Unprocessable Entity`
