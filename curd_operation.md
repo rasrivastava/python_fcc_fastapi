@@ -316,3 +316,58 @@ def create_posts(post: Post):
     my_posts.append(post_dict)
     return {"data": post_dict}
 ```
+
+## Delete operation
+
+```
+def find_index_post(id):
+    for i, p in enumerate(my_posts):
+        if p["id"] == id:
+            return i
+
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    index = find_index_post(id)
+    my_posts.pop(index)
+    return {"message": "post was successfully deleted"}
+```
+
+- before deletion operation, get the data --> http://127.0.0.1:8000/posts (GET)
+
+```
+{
+    "data": [
+        {
+            "title": "title of post 1",
+            "content": "content of post 1",
+            "id": 1
+        },
+        {
+            "title": "title of post 2",
+            "content": "content of post 2",
+            "id": 2
+        }
+    ]
+}
+```
+
+- applying the delete operation --> http://127.0.0.1:8000/posts/1 (DELETE)
+
+```
+{
+    "message": "post was successfully deleted"
+}
+```
+
+- checking the data after the delete operation
+
+```
+    "data": [
+        {
+            "title": "title of post 2",
+            "content": "content of post 2",
+            "id": 2
+        }
+    ]
+}
+```
