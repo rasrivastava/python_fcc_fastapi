@@ -1,5 +1,7 @@
 # Validation from POST method
 
+### Using the validattion we can be sure the data is verified and what is required to process the job
+
 https://pydantic-docs.helpmanual.io/
 
 ```
