@@ -133,7 +133,7 @@ def create_posts(post: Post):
     ```
    - Now, getting request from `http://127.0.0.1:8000/posts` ==> GET
    - Before
-       ```
+    ```
     {
         "data": [
             {
