@@ -202,3 +202,22 @@ title='top foods in varanasi' content='check out' published=True rating=5
 5
 INFO:     127.0.0.1:59210 - "POST /createposts HTTP/1.1" 200 OK
 ```
+
+## converting to dict data type using pydantic model
+
+```
+@apptest.post("/createposts")
+def create_posts(new_post: Post):
+    print(new_post) # python dic
+    print(new_post.dict()) # converting to dict data type using pydantic model
+    return {"data": new_post} # python dic
+# data stricture --> title str; content str
+
+```
+
+```
+INFO:     Application startup complete.
+title='top foods in varanasi' content='check out' published=True rating=5
+{'title': 'top foods in varanasi', 'content': 'check out', 'published': True, 'rating': 5}
+INFO:     127.0.0.1:59263 - "POST /createposts HTTP/1.1" 200 OK
+```
