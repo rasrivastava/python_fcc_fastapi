@@ -174,8 +174,22 @@ def create_posts(post: Post):
     }
     ```
 
+## Retriving one individual post
 
+```
+@apptest.get("/posts/{id}")  # id : path parameter
+def get_post(id):
+    print(id)
+    return {"post_details": f"Here is post {id}"}
+```
 
+- postman --> `http://127.0.0.1:8000/posts/2` (GET)
+  - Get the request
+  ```
+  {
+    "post_details": "Here is post 2"
+  }
+  ```
 
 
 
