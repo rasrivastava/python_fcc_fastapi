@@ -267,3 +267,22 @@ def get_post(id: int, response: Response):
     return {"post_details": f"Here is post {post}"}
 
 ```
+
+- we can make much better user experience by returning a proper message
+
+```
+@apptest.get("/posts/{id}")
+def get_post(id: int, response: Response):
+    post = find_post(id)
+    if not post:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        return {"message": f"post with id: {id} was not found"}
+    return {"post_details": f"Here is post {post}"}
+```
+
+`http://127.0.0.1:8000/posts/5` --> 404 error code
+```
+{
+    "message": "post with id: 4 was not found"
+}
+```
