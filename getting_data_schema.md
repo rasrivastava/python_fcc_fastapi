@@ -1,3 +1,6 @@
+# Validation from POST method
+=============================
+
 https://pydantic-docs.helpmanual.io/
 
 ```
@@ -105,7 +108,7 @@ INFO:     127.0.0.1:58925 - "POST /createposts HTTP/1.1" 200 OK
 
 - CMD line: `INFO:     127.0.0.1:58948 - "POST /createposts HTTP/1.1" 422 Unprocessable Entity`
 
-## adding an additional/optinal data
+## adding an additional data which is optinal and if not provided the the default value will be taken
 
 `published: bool = True`
 
@@ -113,7 +116,7 @@ INFO:     127.0.0.1:58925 - "POST /createposts HTTP/1.1" 200 OK
 class Post(BaseModel):
     title: str
     content: str
-    published: bool = True
+    published: bool = True # if we don't provide this value this default will be "True"
 ```
 
 ```
@@ -145,4 +148,56 @@ INFO:     Application startup complete.
 title='top foods in varanasi' content='check out' published=True
 True
 INFO:     127.0.0.1:59133 - "POST /createposts HTTP/1.1" 200 OK
+```
+
+## adding an optinal data and if not provided then the this value will be skipped
+
+```
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True # if we don't provide this value this default will be "True"
+    rating: Optional[int] = None # if nothing will be provided it will be take none
+
+...
+...
+
+@apptest.post("/createposts")
+def create_posts(new_post: Post):
+    print(new_post)
+    print(new_post.rating) ## printing it
+    return {"data": "new post"}
+
+```
+
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out",
+    "published": true
+}
+```
+
+```
+INFO:     Application startup complete.
+title='top foods in varanasi' content='check out' published=True rating=None
+None
+INFO:     127.0.0.1:59193 - "POST /createposts HTTP/1.1" 200 OK
+```
+
+- if provided the **rating**
+
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out",
+    "published": true,
+    "rating": 5
+}
+```
+
+```
+title='top foods in varanasi' content='check out' published=True rating=5
+5
+INFO:     127.0.0.1:59210 - "POST /createposts HTTP/1.1" 200 OK
 ```
