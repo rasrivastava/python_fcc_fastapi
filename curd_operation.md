@@ -250,3 +250,20 @@ def get_post(id: int, response: Response):
 ```
 
 `http://127.0.0.1:8000/posts/5` --> 404 error code
+
+- more better to handle the code error is using **status**
+
+```
+from fastapi import FastAPI, Response, status
+
+...
+...
+
+@apptest.get("/posts/{id}")
+def get_post(id: int, response: Response):
+    post = find_post(id)
+    if not post:
+        response.status_code = status.HTTP_404_NOT_FOUND
+    return {"post_details": f"Here is post {post}"}
+
+```
