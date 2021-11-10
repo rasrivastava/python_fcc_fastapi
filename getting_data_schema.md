@@ -104,3 +104,31 @@ INFO:     127.0.0.1:58925 - "POST /createposts HTTP/1.1" 200 OK
 ```
 
 - CMD line: `INFO:     127.0.0.1:58948 - "POST /createposts HTTP/1.1" 422 Unprocessable Entity`
+
+## adding an additional/optinal data
+
+`published: bool = True`
+
+```
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+```
+
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out",
+    "published": true
+}
+```
+
+```
+INFO:     Application startup complete.
+title='top foods in varanasi' content='check out' published=True
+True
+INFO:     127.0.0.1:59008 - "POST /createposts HTTP/1.1" 200 OK
+```
+
+- if 
