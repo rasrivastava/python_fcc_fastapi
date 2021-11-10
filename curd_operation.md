@@ -211,3 +211,14 @@ def get_post(id):
     "post_details": "Here is post {'title': 'title of post 2', 'content': 'content of post 2', 'id': 2}"
 }
 ```
+- but it will create a issue and return internal server 500 error when we pass a string, this can be handled with the fastapi
+
+```
+@apptest.get("/posts/{id}")  # id : path parameter
+def get_post(id: int):
+    post = find_post(id)
+    return {"post_details": f"Here is post {post}"}
+```
+
+- Now, if user provides a string this, it will generate a exception which can be handled.
+
