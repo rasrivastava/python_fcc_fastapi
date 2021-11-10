@@ -1,5 +1,4 @@
 # Validation from POST method
-=============================
 
 https://pydantic-docs.helpmanual.io/
 
