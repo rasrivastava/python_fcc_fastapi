@@ -16,3 +16,12 @@ https://content-www.enterprisedb.com/downloads/postgres-postgresql-downloads
   -  If you need column to be a properly filled in to create a new record, a `NOT NULL` contraints can be added to the column to ensure that the column is never left blank.
 
 
+- Create a new server --> Create a new database `fastapi`
+
+```
+CREATE DATABASE fastapi
+    WITH 
+    OWNER = postgres
+    ENCODING = 'UTF8'
+    CONNECTION LIMIT = -1;
+```
