@@ -594,3 +594,7 @@ def update_post(id: int, post: Post): # be sure the post comes in the right sche
     ]
 }
 ```
+
+## Fast API uses SWAGGER API to create a documents
+
+`http://127.0.0.1:8000/docs`
