@@ -397,3 +397,200 @@ def delete_post(id: int):
 
 ## Update Operations
 
+- Update --> PUT/PATCH --> /posts/:id --> @app.put("/posts/{id}")
+
+```
+@apptest.put("/posts/{id}")
+def update_post(id: int, post: Post): # be sure the post comes in the right schema
+    print(post)
+    return {"message": "updated post"}
+```
+
+- postman --> http://127.0.0.1:8000/posts/1 (**PUT**)
+
+```
+{
+    "title": "updated title",
+    "content": "content of post 1"
+}
+```
+
+- CLI
+```
+INFO:     Application startup complete.
+title='updated title' content='content of post 1' published=True rating=None
+INFO:     127.0.0.1:54687 - "PUT /posts/1 HTTP/1.1" 200 OK
+```
+
+- updating the code
+
+```
+@apptest.put("/posts/{id}") # user is going to 'PUT' a request on a particular ID to which update is required
+def update_post(id: int, post: Post): # be sure the post comes in the right schema
+    index = find_index_post(id)
+    if index == None: # if it doesnot exits then throw an exception
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    # if its exits
+    post_dict = post.dict() # get all the data from user related to update in a dict form
+    post_dict['id'] = id # addind 'id' so that final dict has an id
+    my_posts[index] = post_dict # replace with post_dict
+    return {"data": post_dict}
+```
+
+- complete code
+
+```
+from typing import Optional
+from fastapi import FastAPI, Response, status, HTTPException
+from fastapi.params import Body
+from pydantic import BaseModel
+from random import randrange
+
+apptest = FastAPI()
+
+"""
+BaseModel class of the pydantic module will help to authenticate
+or validate that the client inputs two things:
+    1) title
+    2) content
+"""
+class Post(BaseModel):
+    title: str
+    content: str
+    published: bool = True # if we don't provide this value this default will be "True"
+    rating: Optional[int] = None # if nothing will be provided it will be take none
+
+my_posts = [{"title": "title of post 1", "content": "content of post 1", "id": 1},
+            {"title": "title of post 2", "content": "content of post 2", "id": 2}
+           ] # post objects (static data later we will store in database)
+
+
+@apptest.get("/")
+def printMessage():
+    return "Welcome Family"
+
+
+@apptest.get("/posts")
+def printLogin():
+    return {"data": my_posts} # prints the static data from the my_posts variable
+
+
+@apptest.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post):
+    post_dict = post.dict()
+    post_dict['id'] = randrange(0, 1000000)
+    my_posts.append(post_dict)
+    return {"data": post_dict}
+
+def find_post(id):
+    for p in my_posts:
+        if p["id"] == id:
+            return p
+
+@apptest.get("/posts/{id}")
+def get_post(id: int):
+    post = find_post(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": f"Here is post {post}"}
+
+def find_index_post(id):
+    for i, p in enumerate(my_posts):
+        if p["id"] == id:
+            return i
+
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    index = find_index_post(id)
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    my_posts.pop(index)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@apptest.put("/posts/{id}") # user is going to 'PUT' a request on a particular ID to which update is required
+def update_post(id: int, post: Post): # be sure the post comes in the right schema
+    index = find_index_post(id)
+    if index == None: # if it doesnot exits then throw an exception
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    # if its exits
+    post_dict = post.dict() # get all the data from user related to update in a dict form
+    post_dict['id'] = id # addind 'id' so that final dict has an id
+    my_posts[index] = post_dict # replace with post_dict
+    return {"data": post_dict}
+```
+
+- `http://127.0.0.1:8000/posts` (GET) before update
+
+```
+{
+    "data": [
+        {
+            "title": "title of post 1",
+            "content": "content of post 1",
+            "id": 1
+        },
+        {
+            "title": "title of post 2",
+            "content": "content of post 2",
+            "id": 2
+        }
+    ]
+}
+```
+
+- `http://127.0.0.1:8000/posts/1` - (GET) before update
+
+```
+{
+    "post_details": "Here is post {'title': 'title of post 1', 'content': 'content of post 1', 'id': 1}"
+}
+```
+
+- applying `update` method `http://127.0.0.1:8000/posts/1`
+
+```
+{
+    "title": "updated title by PUT method",
+    "content": "content of post 1"
+}
+```
+
+- `http://127.0.0.1:8000/posts/1` - (GET) After update
+
+```
+{
+    "data": {
+        "title": "updated title by PUT method",
+        "content": "content of post 1",
+        "published": true,
+        "rating": null,
+        "id": 1
+    }
+}
+```
+
+- `http://127.0.0.1:8000/posts` (GET) after update
+
+```
+{
+    "data": [
+        {
+            "title": "updated title by PUT method",
+            "content": "content of post 1",
+            "published": true,
+            "rating": null,
+            "id": 1
+        },
+        {
+            "title": "title of post 2",
+            "content": "content of post 2",
+            "id": 2
+        }
+    ]
+}
+```
