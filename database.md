@@ -14,3 +14,5 @@ https://content-www.enterprisedb.com/downloads/postgres-postgresql-downloads
 - **NULL Contraints**:
   -  By default, when adding a new entry to a database, any column can be left blank. When a column is left blank, it has a null value.
   -  If you need column to be a properly filled in to create a new record, a `NOT NULL` contraints can be added to the column to ensure that the column is never left blank.
+
+
