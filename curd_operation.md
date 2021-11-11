@@ -394,3 +394,6 @@ def delete_post(id: int):
     my_posts.pop(index)
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 ```
+
+## Update Operations
+
