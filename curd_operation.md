@@ -599,3 +599,17 @@ def update_post(id: int, post: Post): # be sure the post comes in the right sche
 
 `http://127.0.0.1:8000/docs` OR `http://127.0.0.1:8000/redoc`
  
+
+## Rescontructing the directory
+
+```
+~/pe/python_f/fastapi # ls
+app  venv
+
+~/pe/python_f/fastapi # ls app
+__init__.py main.py
+```
+
+- Now run as below
+
+`uvicorn app.main:apptest --reload`
