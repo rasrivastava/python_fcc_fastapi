@@ -25,3 +25,65 @@ CREATE DATABASE fastapi
     ENCODING = 'UTF8'
     CONNECTION LIMIT = -1;
 ```
+
+- selecting a table to get all the colums by **ascending** order, here table name is `products`
+
+```
+SELECT * FROM public.products
+ORDER BY id ASC 
+```
+
+- to make changes permanent `COMMIT;`
+
+- Adding a row to the table
+
+```
+INSERT INTO public.products (
+name, price) VALUES (
+'TV'::character varying, '200'::integer)
+ returning id;
+```
+
+```
+INSERT INTO public.products (
+name, price) VALUES (
+'remote'::character varying, '80'::integer)
+ returning id;
+```
+
+```
+INSERT INTO public.products (
+name, price) VALUES (
+'DVD Player'::character varying, '80'::integer)
+ returning id;
+```
+
+- checking the updates
+
+```
+SELECT * FROM public.products
+ORDER BY id ASC 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
