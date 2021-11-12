@@ -124,11 +124,35 @@ name
 "sharpner"
 ```
 
+- `SELECT name, price from products;` --> it will follow that same order
 
+- `SELECT id AS products_id FROM products;` --> Renaming a column
+- `SELECT id AS products_id, is_sale AS on_sale FROM products;`
 
+- Match a specific `id` which matches a row
+  - `SELECT * FROM products WHERE id=5;` 
 
+- Get the rows where price is greater than `50`
+  - `SELECT * FROM products WHERE price < 50;`
 
+  - `SELECT * FROM products WHERE price < 50 AND price < 150;`
 
+- Get the details for `TV` name
+  - `SELECT * FROM products WHERE name = 'TV';` 
 
+- Get the details for the 1, 2, 3 ID
+  - `SELECT * FROM products WHERE id IN (1, 2, 3);`
 
+- Get all the data where name starts with `TV`
+  - `SELECT * FROM products WHERE name LIKE 'TV%';` 
+
+- Reorder any column using **ORDER** keyword
+  - `SELECT * FROM products ORDER BY price;`
+  - `SELECT * FROM products ORDER BY price DESC;`
+
+- Multiple re-ordering:
+  - `SELECT * FROM products ORDER BY price DESC, price DESC;`
+ 
+- Updating a row's value
+  - `UPDATE public.products SET inventory = '100'::integer WHERE id = 9;` 
 
