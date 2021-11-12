@@ -172,6 +172,7 @@ def create_posts(post: Post):
 def create_posts(post: Post):
     cusor.execute(""" INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING * """, (post.title, post.content, post.published))
     new_post = cusor.fetchone()
+    conn.commit()
     return {"data": new_post}
 ```
 
@@ -229,7 +230,84 @@ def create_posts(post: Post):
 }
 ```
 
+## Get a single post
 
+- normal
+
+```
+def find_post(id):
+    for p in my_posts:
+        if p["id"] == id:
+            return p
+
+@apptest.get("/posts/{id}")
+def get_post(id: int):
+    post = find_post(id)
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": f"Here is post {post}"}
+```
+
+- using db
+
+```
+@apptest.get("/posts/{id}")
+def get_post(id: int):
+    #post = find_post(id)
+    cusor.execute(""" SELECT * FROM posts WHERE id=%s """, (id))
+    post = cusor.fetchone()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": f"Here is post {post}"}
+```
+
+- it throws an error `TypeError: 'int' object does not support indexing`, we need to convert `id` to string as its currently int and sql query takes as string.
+
+```
+def find_post(id):
+    for p in my_posts:
+        if p["id"] == id:
+            return p
+
+@apptest.get("/posts/{id}")
+def get_post(id: int):
+    #post = find_post(id)
+    cusor.execute(""" SELECT * FROM posts WHERE id=%s """, (str (id)))
+    post = cusor.fetchone()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": f"Here is post {post}"}
+```
+
+- output --> `http://127.0.0.1:8000/posts/1` GET
+
+```
+{
+    "post_details": "Here is post RealDictRow([('id', 1), ('title', 'first post'), ('content', 'test for the post 1'), ('published', True), ('create_at', datetime.datetime(2021, 11, 12, 23, 12, 13, 607099, tzinfo=datetime.timezone(datetime.timedelta(seconds=19800))))])"
+}
+```
+
+- there are some issue seen when we don't put "," after the argument provided -> `cusor.execute(""" SELECT * FROM posts WHERE id=%s """, (str (id),))`
+
+```
+def find_post(id):
+    for p in my_posts:
+        if p["id"] == id:
+            return p
+
+@apptest.get("/posts/{id}")
+def get_post(id: int):
+    #post = find_post(id)
+    cusor.execute(""" SELECT * FROM posts WHERE id=%s """, (str (id),))
+    post = cusor.fetchone()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": f"Here is post {post}"}
+```
 
 
 
