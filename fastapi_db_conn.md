@@ -98,3 +98,34 @@ while True:
         print("Error: ", error)
         time.sleep(2) # retry every 2 sec
 ```
+
+## Testing POST method
+
+```
+@apptest.get("/posts")
+def get_posts():
+    cusor.execute(""" SELECT * FROM posts """)
+    posts = cusor.fetchall()
+    print(posts)
+    return {"data": my_posts}
+```
+
+- hit the `get` method from postmane --> `http://127.0.0.1:8000/posts` (GET)
+
+- cmd output
+
+```
+INFO:     Application startup complete.
+[RealDictRow([('id', 1), ('title', 'first post'), ('content', 'test for the post 1'), ('published', True), ('create_at', datetime.datetime(2021, 11, 12, 23, 12, 13, 607099, tzinfo=datetime.timezone(datetime.timedelta(seconds=19800))))]), RealDictRow([('id', 2), ('title', 'second post'), ('content', 'test for the post 1'), ('published', True), ('create_at', datetime.datetime(2021, 11, 12, 23, 12, 13, 607099, tzinfo=datetime.timezone(datetime.timedelta(seconds=19800))))])]
+INFO:     127.0.0.1:51851 - "GET /posts HTTP/1.1" 200 OK
+```
+
+
+
+
+
+
+
+
+
+
