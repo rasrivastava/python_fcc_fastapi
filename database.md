@@ -104,55 +104,200 @@ ALTER TABLE IF EXISTS public.products
 
   ```
   name         price id is_sale inventory create_at
-  "TV"	        200	 1	false	          0	"2021-11-12 20:30:50.551514+05:30"
-  "DVD Player"	80	 2	false	          0	"2021-11-12 20:30:50.551514+05:30"
-  "remote"	    80	 3	false	          0	"2021-11-12 20:30:50.551514+05:30"
-  "microphone"	30	 5	false	          0	"2021-11-12 20:30:50.551514+05:30"
-  "pencil"	    2	   6	false	          0	"2021-11-12 20:30:50.551514+05:30"
-  "sharpner"	  4	   7	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  "DVD Player"	    80	2	false	  0	"2021-11-12 20:30:50.551514+05:30"
+  "remote"	        80	3	false	  0	"2021-11-12 20:30:50.551514+05:30"
+  "microphone"	    30	5	false	  0	"2021-11-12 20:30:50.551514+05:30"
+  "pencil"	         2	6	false	  0	"2021-11-12 20:30:50.551514+05:30"
+  "sharpner"	       4	7	false	  0	"2021-11-12 20:30:50.551514+05:30"
+  "TV Blue"	       400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+  "TV Red"	       300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+  "TV"	           200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
   ```
 
 - `SELECT name from products;` -> if we only want to `name` row
 
 ```
-name
-"TV"
 "DVD Player"
 "remote"
 "microphone"
 "pencil"
 "sharpner"
+"TV Blue"
+"TV Red"
+"TV"
 ```
 
 - `SELECT name, price from products;` --> it will follow that same order
+```
+"DVD Player"	80
+"remote"	80
+"microphone"	30
+"pencil"	2
+"sharpner"	4
+"TV Blue"	400
+"TV Red"	300
+"TV"	200
+```
 
 - `SELECT id AS products_id FROM products;` --> Renaming a column
+  ```
+  2
+  3
+  5
+  6
+  7
+  9
+  8
+  1
+  ```
 - `SELECT id AS products_id, is_sale AS on_sale FROM products;`
+    ```
+    2	false
+    3	false
+    5	false
+    6	false
+    7	false
+    9	false
+    8	false
+    1	false
+    ```
 
 - Match a specific `id` which matches a row
-  - `SELECT * FROM products WHERE id=5;` 
+  - `SELECT * FROM products WHERE id=5;`
+  ```
+  "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+  ```
 
 - Get the rows where price is greater than `50`
   - `SELECT * FROM products WHERE price < 50;`
+  ```
+  "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+  ```
 
   - `SELECT * FROM products WHERE price < 50 AND price < 150;`
+  ```
+  "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+  ```
 
 - Get the details for `TV` name
-  - `SELECT * FROM products WHERE name = 'TV';` 
+  - `SELECT * FROM products WHERE name = 'TV';`
+  ```
+  "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+  ```
 
 - Get the details for the 1, 2, 3 ID
   - `SELECT * FROM products WHERE id IN (1, 2, 3);`
+  ```
+  "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+  "DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+  ```
+
+- `SELECT * FROM products;`
+```
+"DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+"remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+"microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+"pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+"sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+"TV Blue"	400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+"TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+"TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+```
 
 - Get all the data where name starts with `TV`
-  - `SELECT * FROM products WHERE name LIKE 'TV%';` 
+  - `SELECT * FROM products WHERE name LIKE 'TV%';`
+  ```
+  "TV Blue"	400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+  "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+  "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+  ```
 
 - Reorder any column using **ORDER** keyword
   - `SELECT * FROM products ORDER BY price;`
+    ```
+    "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+    "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+    "TV Blue"	400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+    ```
   - `SELECT * FROM products ORDER BY price DESC;`
+    ```
+    "TV Blue"	400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+    "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+    "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+    "DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+    ```
 
 - Multiple re-ordering:
   - `SELECT * FROM products ORDER BY price DESC, price DESC;`
+  ```
+  "TV Blue"	400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+  "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+  "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+  "DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+  "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+  ```
+ 
+- Limiting the result
+  - `SELECT * FROM products LIMIT 5;`
+    ```
+    "DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+    ```
+  - `SELECT * FROM products WHERE price > 100 LIMIT 5;`
+    ```
+    "TV Blue"	400	9	false	100	"2021-11-12 22:31:44.872235+05:30"
+    "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+    "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+    ```
+
+- Limiting but removing some result
+  - `SELECT * FROM products ORDER BY id LIMIT 5;`
+    ```
+    "TV"	200	1	false	300	"2021-11-12 20:30:50.551514+05:30"
+    "DVD Player"	80	2	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+    "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+    ```
+  - `SELECT * FROM products ORDER BY id LIMIT 5 OFFSET 2;` 
+      ```
+      "remote"	80	3	false	0	"2021-11-12 20:30:50.551514+05:30"
+      "microphone"	30	5	false	0	"2021-11-12 20:30:50.551514+05:30"
+      "pencil"	2	6	false	0	"2021-11-12 20:30:50.551514+05:30"
+      "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
+      "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
+      ```
  
 - Updating a row's value
   - `UPDATE public.products SET inventory = '100'::integer WHERE id = 9;` 
+
+
+
+
+
+
+
+
+
+
 
