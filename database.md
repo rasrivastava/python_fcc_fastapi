@@ -98,10 +98,31 @@ ALTER TABLE IF EXISTS public.products
   - Table --> table name `products` --> Properties (rigth click) --> columns
 
 
+## SQL queries
 
+- `SELECT * from products;` -> To get all the columns of the table
 
+  ```
+  name         price id is_sale inventory create_at
+  "TV"	        200	 1	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  "DVD Player"	80	 2	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  "remote"	    80	 3	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  "microphone"	30	 5	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  "pencil"	    2	   6	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  "sharpner"	  4	   7	false	          0	"2021-11-12 20:30:50.551514+05:30"
+  ```
 
+- `SELECT name from products;` -> if we only want to `name` row
 
+```
+name
+"TV"
+"DVD Player"
+"remote"
+"microphone"
+"pencil"
+"sharpner"
+```
 
 
 
