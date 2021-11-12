@@ -79,10 +79,23 @@ name) VALUES (
 
 - adding a new column **is_sale** and adding a contraints to default false, so in this if user doesn't provide an entry to this, it will accept it without any error.
 - Here is a twist, suppose we add a new column **inventory** and mark it for `Not Null` and save it, so while saving it, it will throw an error `ERROR: comun "inventory" of relation "product" contains null values`
+- so, to avoid this for now, we add a constraint to default value as 0
 
+## Handling the timestamp
 
+- Suppose we hava usecase, we can add a timestamp for the entry created and it should be managed by postgres and the time should be current time with timezone.
 
+- Here, we have to use a data type: `timestamp with time zone`
+- Add contraint `NOW()`
+- Enable as `NOT NULL`
 
+```
+ALTER TABLE IF EXISTS public.products
+    ADD COLUMN create_at timestamp with time zone NOT NULL DEFAULT NOW();
+```
+
+- To add a column using postgres, follow the below paths
+  - Table --> table name `products` --> Properties (rigth click) --> columns
 
 
 
