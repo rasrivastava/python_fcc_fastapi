@@ -288,8 +288,48 @@ ALTER TABLE IF EXISTS public.products
       "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
       ```
  
-- Updating a row's value
-  - `UPDATE public.products SET inventory = '100'::integer WHERE id = 9;` 
+ ## Adding a record
+ 
+ Standard `INSERT INTO products () VALUES ()`
+ 
+ - Adding a new row `INSERT INTO products (name, price, inventory) VALUES ('mobile', 100, 50);`
+ - Verify it `SELECT * FROM products WHERE name='mobile';`
+   ```
+   "mobile"	100	10	false	50	"2021-11-12 22:52:27.478787+05:30"
+   ```
+- Above we following two steps, but if we want to insert and print as well
+
+  ```
+  INSERT INTO products (name, price, inventory) VALUES ('car', 1000, 50) RETURNING *;
+  ```
+  ```
+  "car"	1000	11	false	50	"2021-11-12 22:56:11.583032+05:30"
+  ```
+
+- Inserting multiple rows at a time
+
+`INSERT INTO products (name, price, inventory) VALUES ('car', 1000, 50), ('bat', 150, 50) RETURNING *;`
+ 
+ 
+ ## DELETION
+ 
+ - Deleting a id=12
+   `DELETE FROM products WHERE id=12;`
+   
+ - `DELETE FROM products WHERE id=13 RETURNING *;`
+
+
+## UPDATION
+
+- `UPDATE products SET name='airpod', price=60 WHERE id = 10 RETURNING *;`
+  `"airpod"	60	10	false	50	"2021-11-12 22:52:27.478787+05:30"`
+  
+- `UPDATE products SET is_sale =true WHERE id > 8 RETURNING *;`
+   ```
+   "TV Blue"	400	9	true	100	"2021-11-12 22:31:44.872235+05:30"
+    "airpod"	60	10	true	50	"2021-11-12 22:52:27.478787+05:30"
+    "car"	1000	11	true	50	"2021-11-12 22:56:11.583032+05:30"
+   ```
 
 
 
