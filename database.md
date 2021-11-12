@@ -66,8 +66,19 @@ ORDER BY id ASC
 ```
 
 
+- Testing, if we don't provide a price while adding a new row --> it will throw an error
 
+```
+INSERT INTO public.products (
+name) VALUES (
+'microphone'::character varying)
+ returning id;
+```
 
+## We can add new columns to the existing table
+
+- adding a new column **is_sale** and adding a contraints to default false, so in this if user doesn't provide an entry to this, it will accept it without any error.
+- Here is a twist, suppose we add a new column **inventory** and mark it for `Not Null` and save it, so while saving it, it will throw an error `ERROR: comun "inventory" of relation "product" contains null values`
 
 
 
