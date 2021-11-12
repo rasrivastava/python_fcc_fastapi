@@ -120,6 +120,114 @@ INFO:     Application startup complete.
 INFO:     127.0.0.1:51851 - "GET /posts HTTP/1.1" 200 OK
 ```
 
+- updating the return value
+
+```
+@apptest.get("/posts")
+def get_posts():
+    cusor.execute(""" SELECT * FROM posts """)
+    posts = cusor.fetchall()
+    return {"data": posts}
+```
+
+- hit the `get` method from postmane --> `http://127.0.0.1:8000/posts` (GET)
+- output on postman
+
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "first post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        },
+        {
+            "id": 2,
+            "title": "second post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        }
+    ]
+}
+```
+
+## Testing POST method
+
+- normal variable method
+
+```
+@apptest.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post):
+    post_dict = post.dict()
+    post_dict['id'] = randrange(0, 1000000)
+    my_posts.append(post_dict)
+    return {"data": my_posts}
+```
+
+```
+@apptest.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post):
+    cusor.execute(""" INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING * """, (post.title, post.content, post.published))
+    new_post = cusor.fetchone()
+    return {"data": new_post}
+```
+
+- postman `http://127.0.0.1:8000/posts` (POST)
+
+- data given
+```
+{
+    "title": "this is my new post using db conn",
+    "content": "check out"
+}
+```
+
+- output on postman
+
+```
+{
+    "data": {
+        "id": 5,
+        "title": "this is my new post using db conn",
+        "content": "check out",
+        "published": true,
+        "create_at": "2021-11-13T00:08:49.871733+05:30"
+    }
+}
+```
+
+- get all the posts: `get` method from postmane --> `http://127.0.0.1:8000/posts` (GET)
+
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "first post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        },
+        {
+            "id": 2,
+            "title": "second post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        },
+        {
+            "id": 5,
+            "title": "this is my new post using db conn",
+            "content": "check out",
+            "published": true,
+            "create_at": "2021-11-13T00:08:49.871733+05:30"
+        }
+    ]
+}
+```
 
 
 
