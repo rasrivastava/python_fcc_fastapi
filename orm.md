@@ -24,7 +24,7 @@ __init__.py database.py main.py     models.py
 - **models.py**: declare the table name and related colums here
 - **datavase.py**: declare the database connections
 
-- # models.py
+- models.py
 ```
 import sqlalchemy
 from sqlalchemy import Column, Integer, String
