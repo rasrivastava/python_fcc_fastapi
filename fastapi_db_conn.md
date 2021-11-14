@@ -309,7 +309,77 @@ def get_post(id: int):
     return {"post_details": f"Here is post {post}"}
 ```
 
+## DELETION
 
+```
+def find_index_post(id):
+    for i, p in enumerate(my_posts):
+        if p["id"] == id:
+            return i
+
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    index = find_index_post(id)
+    if index == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    my_posts.pop(index)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+- API code
+
+```
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    cusor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
+    delete_post = cusor.fetchone()
+    conn.commit()
+
+    if delete_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+- Getting all the data
+
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "first post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        },
+        {
+            "id": 2,
+            "title": "second post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        }
+    ]
+}
+```
+
+- Deleting the id:2 --> http://127.0.0.1:8000/posts/2 (**DELETE**)
+- Getting the get the data: verify, we will the id: 2 is got deleted
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "first post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        }
+    ]
+}
+```
 
 
 
