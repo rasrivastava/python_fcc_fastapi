@@ -366,6 +366,7 @@ def delete_post(id: int):
 ```
 
 - Deleting the id:2 --> http://127.0.0.1:8000/posts/2 (**DELETE**)
+  - Nothing will be returned 
 - Getting the get the data: verify, we will the id: 2 is got deleted
 ```
 {
@@ -381,7 +382,106 @@ def delete_post(id: int):
 }
 ```
 
+- If we again try to delete the id: 2, we will an error which we have handled --> http://127.0.0.1:8000/posts/2 (DELETE)
 
+```
+{
+    "detail": "post with id: 2 was not found"
+}
+```
 
+## UPDATE Operation
 
+- Normal without using an API
 
+```
+def find_index_post(id):
+    for i, p in enumerate(my_posts):
+        if p["id"] == id:
+            return i
+ 
+ 
+@apptest.put("/posts/{id}") # user is going to 'PUT' a request on a particular ID to which update is required
+def update_post(id: int, post: Post): # be sure the post comes in the right schema
+    index = find_index_post(id)
+    if index == None: # if it doesnot exits then throw an exception
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    # if its exits
+    post_dict = post.dict() # get all the data from user related to update in a dict form
+    post_dict['id'] = id # addind 'id' so that final dict has an id
+    my_posts[index] = post_dict # replace with post_dict
+    return {"data": post_dict}
+
+```
+
+- Using API
+
+```
+@apptest.put("/posts/{id}") # user is going to 'PUT' a request on a particular ID to which update is required
+def update_post(id: int, post: Post): # be sure the post comes in the right schema
+    cusor.execute(""" UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING * """,
+                   (post.title, post.content, post.published, str(id)))
+    updated_post = cusor.fetchone()
+    conn.commit()
+    if update_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"data": updated_post}
+
+```
+
+- before update: http://127.0.0.1:8000/posts (GET)
+
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "first post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        },
+        {
+            "id": 6,
+            "title": "updated title by PUT method",
+            "content": "content of post",
+            "published": true,
+            "create_at": "2021-11-14T19:17:18.443175+05:30"
+        }
+    ]
+}
+```
+
+-updating `http://127.0.0.1:8000/posts/6` (PUT)
+
+```
+{
+    "title": "[UPDATED] updated title by PUT method",
+    "content": "[UPDATED] content of post"
+}
+```
+
+- verify it
+
+```
+{
+    "data": [
+        {
+            "id": 1,
+            "title": "first post",
+            "content": "test for the post 1",
+            "published": true,
+            "create_at": "2021-11-12T23:12:13.607099+05:30"
+        },
+        {
+            "id": 6,
+            "title": "[UPDATED] updated title by PUT method",
+            "content": "[UPDATED] content of post",
+            "published": true,
+            "create_at": "2021-11-14T19:17:18.443175+05:30"
+        }
+    ]
+}
+```
