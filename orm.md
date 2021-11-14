@@ -41,7 +41,7 @@ class Post(Base):
     published = Column(Boolean, default=True)
 ```
 
-- # database.py
+- database.py
 
 ```
 from sqlalchemy import create_engine
