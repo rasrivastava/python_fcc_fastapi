@@ -58,6 +58,14 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base() # base class
+
+# Dependency
+def get_db(): # get a session to the database
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 ```
 
 - main.py
@@ -75,22 +83,14 @@ from psycopg2.extras import RealDictCursor
 import time
 
 from . import models
-from .database import engine, SessionLocal
+from .database import engine, get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
+
 
 models.Base.metadata.create_all(bind=engine)
 
 apptest = FastAPI()
-
-# Dependency
-def get_db(): # get a session to the database
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 @apptest.get("/sqlalchemy")
 def test_posts(db: Session = Depends(get_db)):
