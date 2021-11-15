@@ -428,3 +428,73 @@ def delete_post(id: int, db: Session = Depends(get_db)):
     ]
 }
 ```
+
+
+## Updated POST
+
+```
+@apptest.put("/posts/{id}")
+def update_post(id: int, post: Post):
+    cusor.execute(""" UPDATE posts SET title=%s, content=%s, published=%s WHERE id = %s RETURNING * """,
+                   (post.title, post.content, post.published, str(id)))
+    updated_post = cusor.fetchone()
+    conn.commit()
+    if update_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"data": updated_post}
+```
+
+- now
+
+```
+@apptest.put("/posts/{id}")
+def update_post(id: int, updated_post: Post, db: Session = Depends(get_db)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+
+    post_query.update(updated_post.dict(), synchronize_session=False)
+    db.commit()
+    return {"data": post_query.first()}
+```
+
+- query `http://127.0.0.1:8000/posts/3` (put)
+
+```
+{
+    "data": {
+        "published": true,
+        "title": "rasrivas.....updated title by PUT method",
+        "id": 3,
+        "created_at": "2021-11-15T19:57:22.514406+05:30",
+        "content": "content of post"
+    }
+}
+```
+
+- verify  `http://127.0.0.1:8000/posts` (GET), it gets updated
+
+```
+{
+    "data": [
+        {
+            "published": true,
+            "title": "first post",
+            "id": 2,
+            "created_at": "2021-11-14T23:28:03.429537+05:30",
+            "content": "first post"
+        },
+        {
+            "published": true,
+            "title": "rasrivas.....updated title by PUT method",
+            "id": 3,
+            "created_at": "2021-11-15T19:57:22.514406+05:30",
+            "content": "content of post"
+        }
+    ]
+}
+```
