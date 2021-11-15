@@ -255,3 +255,75 @@ def get_posts(db: Session = Depends(get_db)):
     ]
 }
 ```
+
+## POST operation
+
+- before
+```
+@apptest.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post):
+    cusor.execute(""" INSERT INTO posts (title, content, published) VALUES (%s, %s, %s) RETURNING * """, (post.title, post.content, post.published))
+    new_post = cusor.fetchone()
+    conn.commit()
+    return {"data": new_post}
+```
+
+- new
+
+```
+@apptest.post("/posts", status_code=status.HTTP_201_CREATED)
+def create_posts(post: Post, db: Session = Depends(get_db)):   
+    new_post = models.Post(title=post.title, content=post.content, published=post.published)
+    db.add(new_post) # add the post
+    db.commit() # commit it
+    db.refresh(new_post) ## retrive the new post
+    return {"data": new_post}
+```
+
+- create post `http://127.0.0.1:8000/posts` (POST)
+- data input
+```
+{
+    "title": "[ORM] top foods in varanasi",
+    "content": "check out",
+    "published": true,
+    "rating": 5
+}
+```
+
+- output
+
+```
+{
+    "data": {
+        "title": "[ORM] top foods in varanasi",
+        "published": true,
+        "content": "check out",
+        "id": 3,
+        "created_at": "2021-11-15T19:57:22.514406+05:30"
+    }
+}
+```
+
+- verify the result `http://127.0.0.1:8000/posts` (GET)
+
+```
+{
+    "data": [
+        {
+            "title": "first post",
+            "published": true,
+            "content": "first post",
+            "id": 2,
+            "created_at": "2021-11-14T23:28:03.429537+05:30"
+        },
+        {
+            "title": "[ORM] top foods in varanasi",
+            "published": true,
+            "content": "check out",
+            "id": 3,
+            "created_at": "2021-11-15T19:57:22.514406+05:30"
+        }
+    ]
+}
+```
