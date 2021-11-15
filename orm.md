@@ -376,3 +376,55 @@ def get_post(id: int, db: Session = Depends(get_db)):
     }
 }
 ```
+
+## Delete operation
+
+```
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int):
+    cusor.execute(""" DELETE FROM posts WHERE id = %s RETURNING * """, (str(id),))
+    delete_post = cusor.fetchone()
+    conn.commit()
+
+    if delete_post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+```
+@apptest.delete("/posts/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int, db: Session = Depends(get_db)):
+    post = db.query(models.Post).filter(models.Post.id == id)
+
+    if post.first() == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+
+    post.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+- `http://127.0.0.1:8000/posts/4` (DELETE)
+- `http://127.0.0.1:8000/posts` (Get), we will see id 4 related row is deleted
+```
+{
+    "data": [
+        {
+            "title": "first post",
+            "published": true,
+            "content": "first post",
+            "id": 2,
+            "created_at": "2021-11-14T23:28:03.429537+05:30"
+        },
+        {
+            "title": "[ORM] top foods in varanasi",
+            "published": true,
+            "content": "check out",
+            "id": 3,
+            "created_at": "2021-11-15T19:57:22.514406+05:30"
+        }
+    ]
+}
+```
