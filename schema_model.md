@@ -251,3 +251,19 @@ def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends
     return post_query.first()
 ```
 - for the getting the all the post we have used the `List` datatype as we have multiple results.
+
+## Next topic: user registration
+
+- created a new model
+
+```
+class User(Base):
+    __tablename__ = "users"
+
+    email = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    id = Column(Integer, primary_key=True, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False,
+                        server_default=text('now()'))
+```
