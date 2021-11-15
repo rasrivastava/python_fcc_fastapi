@@ -157,7 +157,7 @@ apptest = FastAPI()
 
 @apptest.get("/sqlalchemy")
 def test_posts(db: Session = Depends(get_db)):
-    posts = db.query(models.Post).all()
+    posts = db.query(models.Post).all() # explanation below
     return {"posts": posts}
     
 database.py
@@ -198,3 +198,26 @@ def get_db(): # get a session to the database query and close the connection onc
     ]
 }
 ```
+
+- If we want to more know about the `posts = db.query(models.Post).all()`, we can print the `posts = db.query(models.Post)` this data and we will acutally see behind the uses the SQL
+
+```
+@apptest.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    #posts = db.query(models.Post).all()
+    posts = db.query(models.Post)
+    print(posts)
+    return {"posts": "okay"}
+```
+
+- cli output
+
+```
+INFO:     127.0.0.1:56630 - "GET /posts HTTP/1.1" 200 OK
+SELECT posts.id AS posts_id, posts.title AS posts_title, posts.content AS posts_content, posts.published AS posts_published, posts.created_at AS posts_created_at 
+FROM posts
+INFO:     127.0.0.1:56646 - "GET /sqlalchemy HTTP/1.1" 200 OK
+```
+
+`SELECT posts.id AS posts_id, posts.title AS posts_title, posts.content AS posts_content, posts.published AS posts_published, posts.created_at AS posts_created_at 
+FROM posts`
