@@ -142,3 +142,32 @@ class Post(PostBase):
     "created_at": "2021-11-15T23:32:47.592033+05:30"
 }
 ```
+
+- we can reduce the code as we have inherited the class and it has many data's already, we can remove the paramters which are already declated in the parent class
+
+```class Post(PostBase):
+    id: int
+    created_at: datetime
+```
+
+```
+from sqlalchemy import orm
+from pydantic import BaseModel
+from datetime import datetime
+
+class PostBase(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+
+class PostCreate(PostBase):
+    pass
+
+class Post(PostBase):
+    id: int
+    created_at: datetime
+    
+    class Config: # to support conveting into dict
+        orm_mode = True
+
+```
