@@ -221,3 +221,37 @@ INFO:     127.0.0.1:56646 - "GET /sqlalchemy HTTP/1.1" 200 OK
 
 `SELECT posts.id AS posts_id, posts.title AS posts_title, posts.content AS posts_content, posts.published AS posts_published, posts.created_at AS posts_created_at 
 FROM posts`
+
+## Fetching the GET posts table data
+
+- before
+
+```
+@apptest.get("/posts")
+def get_posts():
+    cusor.execute(""" SELECT * FROM posts """)
+    posts = cusor.fetchall()
+    return {"data": posts}
+```
+- Now
+```
+@apptest.get("/posts")
+def get_posts(db: Session = Depends(get_db)):
+    posts = db.query(models.Post).all()
+    return {"data": posts}
+```
+
+- verifying `http://127.0.0.1:8000/posts` (GET)
+```
+{
+    "data": [
+        {
+            "title": "first post",
+            "published": true,
+            "created_at": "2021-11-14T23:28:03.429537+05:30",
+            "id": 2,
+            "content": "first post"
+        }
+    ]
+}
+```
