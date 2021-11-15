@@ -502,6 +502,8 @@ def update_post(id: int, updated_post: Post, db: Session = Depends(get_db)):
 ## Complete code
 
 ```
+main.py
+-------
 from typing import Optional
 from fastapi import FastAPI, Response, status, HTTPException
 from fastapi.params import Body
@@ -588,4 +590,48 @@ def update_post(id: int, updated_post: Post, db: Session = Depends(get_db)):
     post_query.update(updated_post.dict(), synchronize_session=False)
     db.commit()
     return {"data": post_query.first()}
+    
+database.py
+-----------
+
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+SQLALCHEMY_DATABASE_URL = "postgresql://postgres:redhat@localhost/fastapi"
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base() # base class
+
+# Dependency
+def get_db(): # get a session to the database query and close the connection once completed
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+models.py
+---------
+
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.sql.expression import text
+from sqlalchemy.sql.sqltypes import TIMESTAMP, Boolean
+from .database import Base
+
+class Post(Base):
+    __tablename__ = "posts" # table name
+    
+    # below are the column names
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String, nullable=False)
+    content = Column(String, nullable=False)
+    published = Column(Boolean, server_default='TRUE', nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False,
+                        server_default=text('now()'))
 ```
