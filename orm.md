@@ -635,3 +635,5 @@ class Post(Base):
                         nullable=False,
                         server_default=text('now()'))
 ```
+![Screenshot 2021-11-15 at 20 34 25](https://user-images.githubusercontent.com/11652564/141804588-4ee69de2-7628-4aa4-a303-eec51113c183.png)
+
