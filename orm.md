@@ -340,3 +340,39 @@ def create_posts(post: Post, db: Session = Depends(get_db)):
     return {"data": new_post}
 ```
 
+## Get a single post
+
+```
+@apptest.get("/posts/{id}")
+def get_post(id: int):
+    cusor.execute(""" SELECT * FROM posts WHERE id=%s """, (str (id),))
+    post = cusor.fetchone()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": f"Here is post {post}"}
+```
+
+```
+@apptest.get("/posts/{id}")
+def get_post(id: int, db: Session = Depends(get_db)):
+    post = db.query(models.Post).filter(models.Post.id == id).first() # get the first one not all which check for all the post
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return {"post_details": post}
+```
+
+- `http://127.0.0.1:8000/posts/4` (get)
+
+```
+{
+    "post_details": {
+        "published": true,
+        "title": "[UPDATED ORM] top foods in varanasi",
+        "created_at": "2021-11-15T20:03:14.032177+05:30",
+        "id": 4,
+        "content": "check out"
+    }
+}
+```
