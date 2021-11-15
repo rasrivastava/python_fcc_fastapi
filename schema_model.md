@@ -98,3 +98,47 @@ class Post(PostBase):
     class Config: # to support conveting into dict
         orm_mode = True
 ```
+
+- Now, adding two parameter, id and created_at as it will be required to store this data aswell
+
+```
+from sqlalchemy import orm
+from pydantic import BaseModel
+from datetime import datetime
+
+class PostBase(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+
+class PostCreate(PostBase):
+    pass
+
+class Post(PostBase):
+    id: int
+    title: str
+    content: str
+    published: bool
+    created_at: datetime
+    
+    class Config: # to support conveting into dict
+        orm_mode = True
+```
+- Now let's again create it `http://127.0.0.1:8000/posts` (POST)
+- input
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out"
+}
+```
+- output
+```
+{
+    "title": "top foods in varanasi",
+    "content": "check out",
+    "published": true,
+    "id": 8,
+    "created_at": "2021-11-15T23:32:47.592033+05:30"
+}
+```
