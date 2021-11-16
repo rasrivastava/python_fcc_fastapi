@@ -12,12 +12,14 @@
 
 ![Screenshot 2021-11-16 at 23 47 31](https://user-images.githubusercontent.com/11652564/142042596-9fc68b08-41bc-4899-8690-3f2739a013a7.png)
 
-- **NOTE:** token is not encrypted,  token is made made up of three pieces:
+- **NOTE:** token is not encrypted at any step this is done to just check if the data collected i s not manuplulated, token is made made up of three pieces:
 
-(1) HEADER: Algo (ex: alh: HS256) and token type (ex: typ: JWT)
-(2) PAYLOAD: Data (so, payload is also not encrypted, so the data can be such as **id**, or user type (admin, dev)): **NOTE**: we always want to keeep the payload light
-(3) VERIFY SIGNATURE:
-    - header: as menntioned above
-    - payload: as mentioned above
-    - secret: unique password will be known by API client
-    - the combination of three will be a signature, again note, this signature will not be encrypted, this is created to just to be sure that **the three data collected** is not happered (manipulated)
+(1) **HEADER**: Algo (ex: alh: HS256) and token type (ex: typ: JWT)
+
+(2) **PAYLOAD**: Data (so, payload is also not encrypted, so the data can be such as **id**, or user type (admin, dev)): **NOTE**: we always want to keeep the payload light
+
+(3) **VERIFY SIGNATURE**:
+    - `header`: as menntioned above with base64 encode
+    - `payload`: as mentioned above with base64 encode
+    - `secret`: **unique password** will be known by API client
+    - the combination of three will be a `signature` with base64 encode, again note, this signature will not be encrypted, this is created to just to be sure that **the three data collected** is not happered (manipulated) by anymean.
