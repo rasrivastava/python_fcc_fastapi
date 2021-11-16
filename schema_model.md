@@ -387,3 +387,39 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     db.refresh(new_user)
     return new_user
 ```
+
+### code management
+
+- we can create a new file `utils.py` and perform the operation related to the hash
+
+```
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # what is hashing algo to be used
+
+def hash(password: str):
+    return pwd_context.hash(password)
+```
+
+- updating the main.py
+
+```
+...
+...
+from . import models, schemas, utils
+
+...
+...
+
+@apptest.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    hashed_password = utils.hash(user.password)
+    user.password = hashed_password
+
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+```
