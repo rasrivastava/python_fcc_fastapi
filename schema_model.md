@@ -558,3 +558,25 @@ def get_user(id: int, db: Session = Depends(get_db)):
     "created_at": "2021-11-16T20:49:26.976379+05:30"
 }
 ```
+
+- here, we can use the responce model
+
+```
+@apptest.get("/users/{id}", response_model=schemas.UserOut)
+def get_user(id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"user with id: {id} was not found")
+    return user
+
+```
+- `http://127.0.0.1:8000/users/1` (GET) to remove password paramter
+
+```
+{
+    "id": 1,
+    "email": "b@gmail.com",
+    "created_at": "2021-11-16T20:49:26.976379+05:30"
+}
+```
