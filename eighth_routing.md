@@ -11,7 +11,7 @@ __init__.py database.py main.py     models.py   routers     schemas.py  utils.py
 post.py user.py
 ```
 
-- main.py
+- **main.py**
 
 ```
 from fastapi import FastAPI
@@ -32,7 +32,7 @@ def root():
     return "Welcome Family"
 ```
 
-- post.py
+- **post.py**
 
 ```
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
@@ -93,7 +93,7 @@ def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends
     return post_query.first()
 ```
 
-- user.py
+- **user.py**
 ```
 from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
