@@ -256,6 +256,7 @@ def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends
 
 - created a new model
 
+- models.py
 ```
 class User(Base):
     __tablename__ = "users"
@@ -266,4 +267,46 @@ class User(Base):
     created_at = Column(TIMESTAMP(timezone=True),
                         nullable=False,
                         server_default=text('now()'))
+```
+
+- schemas.py
+
+```
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+```
+
+- main.py
+
+```
+@apptest.post("/users", status_code=status.HTTP_201_CREATED)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+```
+
+- testing it: `http://127.0.0.1:8000/users` (POST)
+
+- input
+
+```
+{
+    "email": "b@gmail.com",
+    "password": "b@gmail.com"
+}
+```
+
+- output
+
+```
+{
+    "email": "b@gmail.com",
+    "password": "b@gmail.com",
+    "id": 1,
+    "created_at": "2021-11-16T20:49:26.976379+05:30"
+}
 ```
