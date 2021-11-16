@@ -23,3 +23,5 @@
     - `payload`: as mentioned above with base64 encode
     - `secret`: **unique password** will be known by API client
     - the combination of three will be a `signature` with base64 encode, again note, this signature will not be encrypted, this is created to just to be sure that **the three data collected** is not happered (manipulated) by anymean.
+
+![Screenshot 2021-11-16 at 23 59 34](https://user-images.githubusercontent.com/11652564/142044360-12219299-1657-400e-95c8-b828f6cd93b2.png)
