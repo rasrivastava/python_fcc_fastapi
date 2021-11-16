@@ -20,5 +20,4 @@
     - header: as menntioned above
     - payload: as mentioned above
     - secret: unique password will be known by API client
-    
     - the combination of three will be a signature, again note, this signature will not be encrypted, this is created to just to be sure that **the three data collected** is not happered (manipulated)
