@@ -310,3 +310,46 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     "created_at": "2021-11-16T20:49:26.976379+05:30"
 }
 ```
+
+- **NOTE:** we just want to return id and username, so to handle this we need to add a class to the scheamas
+
+- schemas.py
+
+```
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    class Config: # to support conveting into dict
+        orm_mode = True
+```
+
+- main.py add `response_model=schemas.UserOut`
+
+```
+@apptest.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+```
+
+- Now, testing it:
+
+- `http://127.0.0.1:8000/users` (POST)
+```
+{
+    "email": "c@gmail.com",
+    "password": "c@gmail.com"
+}
+```
+
+- it only returns id and emailid
+
+```
+{
+    "id": 2,
+    "email": "c@gmail.com"
+}
+```
