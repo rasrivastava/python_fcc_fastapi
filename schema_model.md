@@ -357,6 +357,8 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
 ## Hashing the password
 
+- Installed the package `pip install "passlib[bcrypt]"` (https://fastapi.tiangolo.com/es/tutorial/security/oauth2-jwt/#install-passlib)
+
 - add below lines to the main.py 
 ```
     hashed_password = pwd_context.hash(user.password)
