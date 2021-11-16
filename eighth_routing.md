@@ -125,3 +125,21 @@ def get_user(id: int, db: Session = Depends(get_db)):
                             detail=f"user with id: {id} was not found")
     return user
 ```
+
+## to make a better doc:
+
+```
+router = APIRouter(
+    prefix="/posts",
+    tags=["Posts"]
+)
+```
+
+```
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"]
+)
+```
+
+![Screenshot 2021-11-16 at 23 17 31](https://user-images.githubusercontent.com/11652564/142038330-84432474-c5f8-45aa-b411-ca8c681865ac.png)
