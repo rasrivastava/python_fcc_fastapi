@@ -353,3 +353,35 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     "email": "c@gmail.com"
 }
 ```
+
+
+## Hashing the password
+
+- add below lines to the main.py 
+```
+    hashed_password = pwd_context.hash(user.password)
+    user.password = hashed_password
+```
+
+
+```
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto") # what is hashing algo to be used
+
+...
+...
+...
+
+@apptest.post("/users", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    # hash the password - user.password
+    hashed_password = pwd_context.hash(user.password)
+    user.password = hashed_password
+
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+```
