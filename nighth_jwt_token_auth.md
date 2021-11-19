@@ -102,3 +102,81 @@ apptest.include_router(auth.router)
 def root():
     return "Welcome Family"
 ```
+
+## python-jose
+
+https://fastapi.tiangolo.com/pt/tutorial/security/oauth2-jwt/#install-python-jose
+
+- We need to install python-jose to generate and verify the JWT tokens in Python
+
+
+- **oauth.py**
+
+```
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+
+# to get a string like this run:
+# openssl rand -hex 32
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30 # min
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    return encoded_jwt
+```
+
+- **auth.py**
+
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from sqlalchemy.orm import Session # database session
+from .. import database, schemas, models, utils, oauth
+from ..database import get_db
+
+router = APIRouter(tags=["Authentication"])
+
+
+@router.post("/login") # user has to provide the cred
+def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == user_credentials.email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Invalid Credentials")
+
+    if not utils.verify(user_credentials.password, user.password):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Invalid Credentials")
+
+    # create a token
+    # return token
+    access_token = oauth.create_access_token(data={"user_id": user.id}) # payload data
+
+    return {"access_token": access_token, "token_type": "nearer"}
+```
+
+- `http://127.0.0.1:8000/login` (POST)
+
+- input
+
+```
+{
+    "email": "nick1@gmail.com",
+    "password": "nick1"
+}
+```
+
+- output
+
+```
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJleHAiOjE2MzczNjQ1Njl9.kpk_BwO_ixYypyk5VmxlilXNrpV2xOAaj2MHlHh_lCU",
+    "token_type": "nearer"
+}
+```
