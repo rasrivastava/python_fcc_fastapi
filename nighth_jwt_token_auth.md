@@ -180,3 +180,70 @@ def login(user_credentials: schemas.UserLogin, db: Session = Depends(get_db)):
     "token_type": "nearer"
 }
 ```
+
+- `OAuth2PasswordRequestForm` --> provides the dependencies
+
+- auth.py
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session # database session
+from .. import database, schemas, models, utils, oauth
+from ..database import get_db
+
+router = APIRouter(tags=["Authentication"])
+
+
+@router.post("/login") # user has to provide the cred
+def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+
+    user = db.query(models.User).filter(models.User.email == user_credentials.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Invalid Credentials")
+
+    if not utils.verify(user_credentials.password, user.password):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Invalid Credentials")
+
+    # create a token
+    # return token
+    access_token = oauth.create_access_token(data={"user_id": user.id}) # payload data
+
+    return {"access_token": access_token, "token_type": "nearer"}
+
+```
+
+- new we use the `http://127.0.0.1:8000/login` (post) it will throw an error
+
+```
+{
+    "email": "nick1@gmail.com",
+    "password": "nick1"
+}
+```
+
+```
+{
+    "detail": [
+        {
+            "loc": [
+                "body",
+                "username"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        },
+        {
+            "loc": [
+                "body",
+                "password"
+            ],
+            "msg": "field required",
+            "type": "value_error.missing"
+        }
+    ]
+}
+```
+<img width="1021" alt="Screenshot 2021-11-19 at 23 32 31" src="https://user-images.githubusercontent.com/11652564/142670032-81c78cc8-6b0b-411b-8227-34d05671e8fe.png">
+
