@@ -23,3 +23,7 @@
 - **CASCADE** --> delete the primary key table row as well when the for
 <img width="932" alt="Screenshot 2021-11-20 at 17 14 42" src="https://user-images.githubusercontent.com/11652564/142725151-2153a974-f586-471a-934a-9c5b2e361de2.png">
 <img width="1069" alt="Screenshot 2021-11-20 at 17 16 00" src="https://user-images.githubusercontent.com/11652564/142725181-32be614d-77b8-488b-bbd8-9142e540f7a1.png">
+
+- adding a row in the post able by following the foreign key rule
+ 
+<img width="1117" alt="Screenshot 2021-11-20 at 17 18 48" src="https://user-images.githubusercontent.com/11652564/142725246-217f4bdc-1925-4ef4-bb08-bf26937f04c9.png">
