@@ -383,6 +383,265 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
 - now, lets create the post using this token, this token has to used in the header
 <img width="989" alt="Screenshot 2021-11-20 at 12 50 33" src="https://user-images.githubusercontent.com/11652564/142718254-ce34d4a2-5ea6-4360-8c57-0b7bcad147d8.png">
 
+- adding the authorization to other methods as well, deleting, updating and getting
+
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from sqlalchemy.orm import Session
+from typing import List
+from .. import models, schemas, oauth2
+from ..database import get_db
+
+router = APIRouter(
+    prefix="/posts",
+    tags=["Posts"]
+)
+
+@router.get("/", response_model=List[schemas.Post])
+def get_posts(db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_curent_user)):
+    posts = db.query(models.Post).all()
+    return posts
 
 
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
+                 user_id: int = Depends(oauth2.get_curent_user)):
+                 # this will force the user is logged in
+    print(user_id)
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
 
+@router.get("/{id}", response_model=schemas.Post)
+def get_post(id: int, db: Session = Depends(get_db), user_id: int = Depends(oauth2.get_curent_user)):
+    post = db.query(models.Post).filter(models.Post.id == id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return post
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int, db: Session = Depends(get_db),
+                user_id: int = Depends(oauth2.get_curent_user)):
+    post = db.query(models.Post).filter(models.Post.id == id)
+
+    if post.first() == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+
+    post.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.put("/{id}", response_model=schemas.Post)
+def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db),
+                user_id: int = Depends(oauth2.get_curent_user)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+
+    post_query.update(updated_post.dict(), synchronize_session=False)
+    db.commit()
+    return post_query.first()
+
+```
+<img width="1005" alt="Screenshot 2021-11-20 at 12 56 58" src="https://user-images.githubusercontent.com/11652564/142718397-2a55f10c-6dc7-4725-ba40-b322e5fa0385.png">
+
+### final code
+
+- post.py
+
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from sqlalchemy.orm import Session
+from typing import List
+from .. import models, schemas, oauth2
+from ..database import get_db
+
+router = APIRouter(
+    prefix="/posts",
+    tags=["Posts"]
+)
+
+@router.get("/", response_model=List[schemas.Post])
+def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_curent_user)):
+    posts = db.query(models.Post).all()
+    return posts
+
+
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
+                 current_user: int = Depends(oauth2.get_curent_user)):
+                 # this will force the user is logged in
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
+
+@router.get("/{id}", response_model=schemas.Post)
+def get_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_curent_user)):
+    post = db.query(models.Post).filter(models.Post.id == id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return post
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_curent_user)):
+    post = db.query(models.Post).filter(models.Post.id == id)
+
+    if post.first() == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+
+    post.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.put("/{id}", response_model=schemas.Post)
+def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_curent_user)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+
+    post_query.update(updated_post.dict(), synchronize_session=False)
+    db.commit()
+    return post_query.first()
+```
+
+- user.py
+
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from sqlalchemy.orm import Session
+from .. import models, schemas, utils
+from ..database import get_db
+
+router = APIRouter(
+    prefix="/users",
+    tags=["Users"]
+)
+
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    hashed_password = utils.hash(user.password)
+    user.password = hashed_password
+    new_user = models.User(**user.dict())
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+    return new_user
+
+
+@router.get("/{id}", response_model=schemas.UserOut)
+def get_user(id: int, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"user with id: {id} was not found")
+    return user
+
+```
+
+- `auth.py`
+
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session # database session
+from .. import database, schemas, models, utils, oauth2
+from ..database import get_db
+
+router = APIRouter(tags=["Authentication"])
+
+
+@router.post("/login", response_model=schemas.Token) # user has to provide the cred
+def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+
+    user = db.query(models.User).filter(models.User.email == user_credentials.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Invalid Credentials")
+
+    if not utils.verify(user_credentials.password, user.password):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Invalid Credentials")
+
+    # create a token
+    # return token
+    access_token = oauth2.create_access_token(data={"user_id": user.id}) # payload data
+
+    return {"access_token": access_token, "token_type": "nearer"}
+
+```
+
+- oauth.py
+
+```
+from . import database, schemas, models
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from . import schemas
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, status
+from sqlalchemy.orm import Session, query
+
+
+oauth_scheme = OAuth2PasswordBearer(tokenUrl='token')
+
+
+# to get a string like this run:
+# openssl rand -hex 32
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30 # min
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    return encoded_jwt
+
+
+def verify_access_token(token: str, credentials_exception):
+    try:
+        print(token)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        id: str = payload.get("user_id")
+
+        if id is None:
+            raise credentials_exception
+        token_data = schemas.TokenData(id=id)
+    except JWTError:
+        raise credentials_exception
+
+    return token_data
+
+def get_curent_user(token: str = Depends(oauth_scheme),
+                    db: Session = Depends(database.get_db)):
+    credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                          detail=f"Could not validate credentials",
+                                          headers={"WWW-Authenicate": "Bearer"})
+    token = verify_access_token(token, credentials_exception)
+    user = db.query(models.User).filter(models.User.id == token.id).first()
+    return user
+
+```
