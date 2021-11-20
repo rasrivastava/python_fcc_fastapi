@@ -73,3 +73,6 @@ class User(Base):
 - now we need to restart the app, but still we will not see the table has added that row, as we have earlier this issue, we need to entirely delete the complete row and re-run the app
 
 <img width="1132" alt="Screenshot 2021-11-20 at 17 28 36" src="https://user-images.githubusercontent.com/11652564/142725474-6e60e434-40ad-462f-ba87-2464e4a8c3ae.png">
+
+
+``8:14``
