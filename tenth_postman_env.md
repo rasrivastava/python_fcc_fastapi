@@ -28,3 +28,5 @@ An environment is a set of variables that allows you to switch the context of yo
 
 <img width="1029" alt="Screenshot 2021-11-20 at 13 32 07" src="https://user-images.githubusercontent.com/11652564/142719195-939bc722-ac54-4ab6-ba62-916debf2ed73.png">
 
+<img width="1020" alt="Screenshot 2021-11-20 at 13 34 27" src="https://user-images.githubusercontent.com/11652564/142719246-3c1e622b-869b-4d37-b8f6-606a713ff955.png">
+
