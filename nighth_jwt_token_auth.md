@@ -247,3 +247,142 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session =
 ```
 <img width="1021" alt="Screenshot 2021-11-19 at 23 32 31" src="https://user-images.githubusercontent.com/11652564/142670032-81c78cc8-6b0b-411b-8227-34d05671e8fe.png">
 
+## Target is to force user to first login to create any post
+
+- `auth.py`
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session # database session
+from .. import database, schemas, models, utils, oauth2
+from ..database import get_db
+
+router = APIRouter(tags=["Authentication"])
+
+
+@router.post("/login") # user has to provide the cred
+def login(user_credentials: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+
+    user = db.query(models.User).filter(models.User.email == user_credentials.username).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Invalid Credentials")
+
+    if not utils.verify(user_credentials.password, user.password):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"Invalid Credentials")
+
+    # create a token
+    # return token
+    access_token = oauth2.create_access_token(data={"user_id": user.id}) # payload data
+
+    return {"access_token": access_token, "token_type": "nearer"}
+
+```
+
+- `oauth2.py`
+
+```
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+from . import schemas
+from fastapi.security import OAuth2PasswordBearer
+from fastapi import Depends, HTTPException, status
+
+
+oauth_scheme = OAuth2PasswordBearer(tokenUrl='token')
+
+
+# to get a string like this run:
+# openssl rand -hex 32
+SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30 # min
+
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
+    return encoded_jwt
+
+
+def verify_access_token(token: str, credentials_exception):
+    try:
+        print(token)
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        id: str = payload.get("user_id")
+
+        if id is None:
+            raise credentials_exception
+        token_data = schemas.TokenData(id=id)
+    except JWTError:
+        raise credentials_exception
+
+    return token_data
+
+def get_curent_user(token: str = Depends(oauth_scheme)):
+    credentials_exception = HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
+                                          detail=f"Could not validate credentials",
+                                          headers={"WWW-Authenicate": "Bearer"})
+    return verify_access_token(token, credentials_exception)
+```
+
+- `schemas.py`
+```
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type = str
+
+class TokenData(BaseModel):
+    id: Optional[str] = None
+```
+
+- `post.py`
+
+```
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
+                 user_id: int = Depends(oauth2.get_curent_user)):
+                 # this will force the user is logged in
+    print(user_id)
+    new_post = models.Post(**post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
+```
+
+- now trying to create a post `http://127.0.0.1:8000/posts` (post)
+
+```
+{
+    "detail": "Not authenticated"
+}
+```
+<img width="1019" alt="Screenshot 2021-11-20 at 12 42 02" src="https://user-images.githubusercontent.com/11652564/142718008-324e6e1c-a356-4295-8224-40bff93c41cf.png">
+
+
+- let first login with a user and use the token to create the post `http://127.0.0.1:8000/login`
+
+- output
+```
+{
+    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjo4LCJleHAiOjE2MzczOTQxNDl9.H8HlkYAe4ktxE17uVSeRZbQ5bWB1kJpSjEZk4J49oiQ",
+    "token_type": "nearer"
+}
+```
+<img width="1030" alt="Screenshot 2021-11-20 at 12 49 40" src="https://user-images.githubusercontent.com/11652564/142718241-07c9fb8a-f5fa-44cb-b0d9-418fb612ef44.png">
+
+- now, lets create the post using this token, this token has to used in the header
+<img width="989" alt="Screenshot 2021-11-20 at 12 50 33" src="https://user-images.githubusercontent.com/11652564/142718254-ce34d4a2-5ea6-4360-8c57-0b7bcad147d8.png">
+
+
+
+
