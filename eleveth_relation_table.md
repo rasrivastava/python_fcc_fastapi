@@ -76,3 +76,37 @@ class User(Base):
 
 
 ``8:14``
+
+# As we have a relation between the two table
+
+- Now, **owner_id** will be required while posting a post
+- this is can be done as, the user will be only able to post when its logged in, so we can use the owner id here
+
+- updating the schemas `schemas.py`
+
+```
+class Post(PostBase):
+    id: int
+    created_at: datetime
+    owner_id: int
+    
+    class Config: # to support conveting into dict
+        orm_mode = True
+```
+
+- updating the post create `new_post = models.Post(owner_id=current_user.id, **post.dict())`
+
+- `post.py`
+
+```
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
+                 current_user: int = Depends(oauth2.get_curent_user)):
+    new_post = models.Post(owner_id=current_user.id, **post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
+```
+<img width="1038" alt="Screenshot 2021-11-23 at 20 25 12" src="https://user-images.githubusercontent.com/11652564/143047453-544cbe55-503c-426b-b6f1-e3f52e59ab30.png">
+
