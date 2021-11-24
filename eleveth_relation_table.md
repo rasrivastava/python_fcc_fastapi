@@ -244,3 +244,138 @@ def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.
     posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()
     return posts
 ```
+
+
+## if we want to show the details the user for a post
+
+- models.py --> `owner = relationship("User")`
+```
+import sqlalchemy
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql.expression import text
+from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.sql.sqltypes import TIMESTAMP, Boolean
+from .database import Base
+
+class Post(Base):
+    __tablename__ = "posts" # table name
+    
+    # below are the column names
+    id = Column(Integer, primary_key=True, nullable=False)
+    title = Column(String, nullable=False)
+    content = Column(String, nullable=False)
+    published = Column(Boolean, server_default='TRUE', nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False,
+                        server_default=text('now()'))
+    owner_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    owner = relationship("User") # we are refering the User class
+    # it will fetech the data of user for us 
+
+class User(Base):
+    __tablename__ = "users"
+    id = Column(Integer, primary_key=True, nullable=False)
+    email = Column(String, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    created_at = Column(TIMESTAMP(timezone=True),
+                        nullable=False,
+                        server_default=text('now()'))
+```
+
+- schemas.py
+
+```
+class Post(PostBase):
+    id: int
+    created_at: datetime
+    owner_id: int
+    owner: UserOut
+    
+    class Config: # to support conveting into dict
+        orm_mode = True
+```
+
+- complete
+```
+from typing import Optional
+from sqlalchemy import orm
+#from fastapi.app.models import User
+from pydantic import BaseModel, EmailStr
+from datetime import datetime
+
+class PostBase(BaseModel):
+    title: str
+    content: str
+    published: bool = True
+
+class PostCreate(PostBase):
+    pass
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str
+
+class UserOut(BaseModel):
+    id: int
+    email: EmailStr
+    created_at: datetime
+    class Config: # to support conveting into dict
+        orm_mode = True
+
+class Post(PostBase):
+    id: int
+    created_at: datetime
+    owner_id: int
+    owner: UserOut
+    
+    class Config: # to support conveting into dict
+        orm_mode = True
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type = str
+
+class TokenData(BaseModel):
+    id: Optional[str] = None
+```
+
+
+
+- before
+
+```
+    {
+        "title": "updated title by PUT method",
+        "content": "content of post",
+        "published": true,
+        "id": 14,
+        "created_at": "2021-11-23T20:21:32.734087+05:30",
+        "owner_id": 8
+    }
+]
+```
+
+- after
+
+```
+    {
+        "title": "updated title by PUT method",
+        "content": "content of post",
+        "published": true,
+        "id": 14,
+        "created_at": "2021-11-23T20:21:32.734087+05:30",
+        "owner_id": 8,
+        "owner": {
+            "id": 8,
+            "email": "nick1@gmail.com",
+            "created_at": "2021-11-19T22:10:04.325265+05:30"
+        }
+    }
+```
+
+<img width="1026" alt="Screenshot 2021-11-24 at 22 58 25" src="https://user-images.githubusercontent.com/11652564/143286679-f5818852-02af-4ea2-90db-06f3dfc7e086.png">
