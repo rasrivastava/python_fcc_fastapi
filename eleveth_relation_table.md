@@ -110,3 +110,137 @@ def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
 ```
 <img width="1038" alt="Screenshot 2021-11-23 at 20 25 12" src="https://user-images.githubusercontent.com/11652564/143047453-544cbe55-503c-426b-b6f1-e3f52e59ab30.png">
 
+
+# updating delete and update option so that only logged user can perform the actions
+
+```
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_curent_user)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    post_query.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+```
+
+
+```
+@router.put("/{id}", response_model=schemas.Post)
+def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_curent_user)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    post_query.update(updated_post.dict(), synchronize_session=False)
+    db.commit()
+    return post_query.first()
+```
+
+- **post.py**
+
+```
+from fastapi import FastAPI, Response, status, HTTPException, Depends, APIRouter
+from sqlalchemy.orm import Session
+from typing import List
+from .. import models, schemas, oauth2
+from ..database import get_db
+
+router = APIRouter(
+    prefix="/posts",
+    tags=["Posts"]
+)
+
+@router.get("/", response_model=List[schemas.Post])
+def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_curent_user)):
+    posts = db.query(models.Post).all()
+    return posts
+
+
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Post)
+def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db),
+                 current_user: int = Depends(oauth2.get_curent_user)):
+                 # this will force the user is logged in
+    print(current_user.email)
+    print(current_user.id)
+    print("========================================================")
+    #new_post = models.Post(**post.dict())
+    new_post = models.Post(owner_id=current_user.id, **post.dict())
+    db.add(new_post)
+    db.commit()
+    db.refresh(new_post)
+    return new_post
+
+@router.get("/{id}", response_model=schemas.Post)
+def get_post(id: int, db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_curent_user)):
+    post = db.query(models.Post).filter(models.Post.id == id).first()
+    if not post:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    return post
+
+
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_post(id: int, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_curent_user)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    post_query.delete(synchronize_session=False)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.put("/{id}", response_model=schemas.Post)
+def update_post(id: int, updated_post: schemas.PostCreate, db: Session = Depends(get_db),
+                current_user: int = Depends(oauth2.get_curent_user)):
+    post_query = db.query(models.Post).filter(models.Post.id == id)
+    post = post_query.first()
+
+    if post == None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"post with id: {id} was not found")
+    
+    if post.owner_id != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
+
+    post_query.update(updated_post.dict(), synchronize_session=False)
+    db.commit()
+    return post_query.first()
+```
+
+## Get the posts only created by logged user
+
+```
+@router.get("/", response_model=List[schemas.Post])
+def get_posts(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_curent_user)):
+    # this will return all the posts from all the users
+    #posts = db.query(models.Post).all()
+    # if we want to get the posts from the logged in user
+    posts = db.query(models.Post).filter(models.Post.owner_id == current_user.id).all()
+    return posts
+```
