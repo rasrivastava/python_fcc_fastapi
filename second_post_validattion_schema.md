@@ -163,7 +163,7 @@ class Post(BaseModel):
     title: str
     content: str
     published: bool = True # if we don't provide this value this default will be "True"
-    rating: Optional[int] = None # if nothing will be provided it will be take none
+    rating: Optional[int] = None # if nothing will be provided it will be take none --> `from typing import Optional`
 
 ...
 ...
@@ -181,6 +181,16 @@ def create_posts(new_post: Post):
 ![Screenshot 2024-06-05 at 18 03 54](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/c9562191-7b5d-40fd-8fc5-48be627b2e5f)
 ![Screenshot 2024-06-05 at 18 04 06](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/8691cd14-d396-4884-8753-c5712f391c40)
 
+
+
+
+![Screenshot 2024-06-05 at 18 07 07](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/55a60415-6b3a-421d-828c-db7acf2433cf)
+
+![Screenshot 2024-06-05 at 18 07 20](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/9713fe59-6b05-4f51-bcb1-dbc3bdc2929f)
+
+![Screenshot 2024-06-05 at 18 07 28](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/eb6b65cd-6eb1-485e-a9c0-892887838940)
+
+![Screenshot 2024-06-05 at 18 08 06](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/4b259c2d-a874-46d8-8a93-a20445e0a003)
 
 
 ```
