@@ -5,6 +5,8 @@
 - ***Update*** --> **PUT/PATCH** --> ***/posts/:id*** --> ***@app.put("/posts/{id}")***
 - ***Delete*** --> **DELETE** --> ***/posts/:id*** --> ***@app.delete("/posts/{id}")***
 
+![Screenshot 2024-06-05 at 18 10 26](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/3f838148-6d66-49e3-952f-5aead403ee3c)
+
 
 - Below example uses the best practice
 
