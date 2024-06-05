@@ -1,3 +1,8 @@
+# Why we need a schema
+
+![Screenshot 2024-06-05 at 17 40 27](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/592e5eba-c3cc-41a8-88c1-21e328174228)
+
+
 # Validation from POST method
 
 ### Using the validattion we can be sure the data is verified and what is required to process the job
