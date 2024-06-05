@@ -1,3 +1,22 @@
+
+![Screenshot 2024-06-06 at 01 10 39](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/310a3a97-2d47-4cf7-ac25-f2b7df9ca812)
+
+![Screenshot 2024-06-06 at 01 11 27](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/4e4f0cbb-c011-4ee5-8cb1-6e3bcde6eb57)
+
+```
+pip install psycopg        
+Collecting psycopg
+  Downloading psycopg-3.1.19-py3-none-any.whl.metadata (4.2 kB)
+Requirement already satisfied: typing-extensions>=4.1 in /Users/rasrivas/project_hw/py311/lib/python3.11/site-packages (from psycopg) (4.12.1)
+Downloading psycopg-3.1.19-py3-none-any.whl (179 kB)
+   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 179.4/179.4 kB 2.1 MB/s eta 0:00:00
+Installing collected packages: psycopg
+Successfully installed psycopg-3.1.19
+```
+
+- Psycopg 3 is a modern implementation of a PostgreSQL adapter for Python.
+- This distribution contains the pure Python package psycopg.
+
 - Created a DB with the below rows;
 - Added two rows
 
