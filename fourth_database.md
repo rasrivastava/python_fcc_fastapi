@@ -26,11 +26,33 @@ CREATE DATABASE fastapi
     CONNECTION LIMIT = -1;
 ```
 
+```
+CREATE TABLE public.products
+(
+    name character varying NOT NULL,
+    price integer NOT NULL,
+    id serial,
+    PRIMARY KEY (id)
+);
+
+ALTER TABLE IF EXISTS public.products
+    OWNER to postgres;
+```
+
+![Screenshot 2024-06-06 at 00 20 10](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/69b8176a-b31c-4e89-9e05-c4c5fadcce71)
+
+
+
 - selecting a table to get all the colums by **ascending** order, here table name is `products`
 
 ```
 SELECT * FROM public.products
 ORDER BY id ASC 
+```
+
+```
+SELECT * FROM public.products
+ORDER BY id ASC LIMIT 100
 ```
 
 - to make changes permanent `COMMIT;`
@@ -81,13 +103,17 @@ name) VALUES (
 - Here is a twist, suppose we add a new column **inventory** and mark it for `Not Null` and save it, so while saving it, it will throw an error `ERROR: comun "inventory" of relation "product" contains null values`
 - so, to avoid this for now, we add a constraint to default value as 0
 
+![Screenshot 2024-06-06 at 00 29 41](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/b3ba95be-e53d-4f9e-975f-bde59a3e6b33)
+
+![Screenshot 2024-06-06 at 00 31 00](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/757f8143-1b39-4c92-83aa-0cb6059c6edd)
+
 ## Handling the timestamp
 
 - Suppose we hava usecase, we can add a timestamp for the entry created and it should be managed by postgres and the time should be current time with timezone.
 
 - Here, we have to use a data type: `timestamp with time zone`
-- Add contraint `NOW()`
-- Enable as `NOT NULL`
+  - Add contraint `NOW()`: add the timezone of the current time when it was added
+  - Enable as `NOT NULL`
 
 ```
 ALTER TABLE IF EXISTS public.products
@@ -96,6 +122,8 @@ ALTER TABLE IF EXISTS public.products
 
 - To add a column using postgres, follow the below paths
   - Table --> table name `products` --> Properties (rigth click) --> columns
+
+![Screenshot 2024-06-06 at 00 36 07](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/f857af16-e0f4-4f2f-939c-77cc3d88906e)
 
 
 ## SQL queries
