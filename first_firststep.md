@@ -86,6 +86,11 @@ INFO:     127.0.0.1:56415 - "GET /login HTTP/1.1" 200 OK
 INFO:     127.0.0.1:56416 - "GET / HTTP/1.1" 200 OK
 ```
 
+
+
+![Screenshot 2024-06-05 at 17 24 41](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/ccdeaaea-a484-47e3-bbb4-f350fbd36540)
+
+
 --------------------------------------------------------------
 
 ## Post Method usage
