@@ -123,6 +123,9 @@ def create_posts(post: Post):
 ```
 
 - **Postman console**
+![Screenshot 2024-06-05 at 18 25 18](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/6b7128ac-49f8-44d0-b54f-b423c5fbb560)
+
+
   - `http://127.0.0.1:8000/posts` ==> POST
   - Sending the request
     ```
