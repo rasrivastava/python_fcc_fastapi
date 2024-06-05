@@ -315,6 +315,13 @@ ALTER TABLE IF EXISTS public.products
       "sharpner"	4	7	false	0	"2021-11-12 20:30:50.551514+05:30"
       "TV Red"	300	8	false	200	"2021-11-12 22:31:27.299919+05:30"
       ```
+
+  ![Screenshot 2024-06-06 at 00 47 53](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/3188ffd3-a505-4a8d-8d6c-c8eb87d12344)
+
+![Screenshot 2024-06-06 at 00 48 14](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/cb2b1952-1d34-4ef4-aa90-4b4d4b5d564a)
+
+![Screenshot 2024-06-06 at 00 48 32](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/68e2070a-73b9-4427-ba4c-1153b7b83503)
+
  
  ## Adding a record
  
