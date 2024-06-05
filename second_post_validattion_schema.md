@@ -226,3 +226,9 @@ title='top foods in varanasi' content='check out' published=True rating=5
 {'title': 'top foods in varanasi', 'content': 'check out', 'published': True, 'rating': 5}
 INFO:     127.0.0.1:59263 - "POST /createposts HTTP/1.1" 200 OK
 ```
+![Screenshot 2024-06-05 at 17 58 41](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/81def120-f153-4676-a3e0-c8c02d7efb1c)
+
+
+
+![Screenshot 2024-06-05 at 17 58 20](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/065c3f33-7405-4a22-869a-b5e0d024c3ce)
+
