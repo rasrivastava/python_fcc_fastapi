@@ -95,7 +95,8 @@ INFO:     127.0.0.1:56416 - "GET / HTTP/1.1" 200 OK
 
 ## Post Method usage
 
-![Uploading Screenshot 2024-06-05 at 17.24.07.png…]()
+![Screenshot 2024-06-05 at 17 25 42](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/279304c1-1f1b-4d3b-9155-5ed2a805cf80)
+
 
 
 - added below data to the body for the `http://127.0.0.1:8000/createposts`  on the postman
