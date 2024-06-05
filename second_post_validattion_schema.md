@@ -175,6 +175,13 @@ def create_posts(new_post: Post):
     return {"data": "new post"}
 
 ```
+![Screenshot 2024-06-05 at 18 04 20](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/7db7226e-3707-40cb-a9ed-932e2613d333)
+
+
+![Screenshot 2024-06-05 at 18 03 54](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/c9562191-7b5d-40fd-8fc5-48be627b2e5f)
+![Screenshot 2024-06-05 at 18 04 06](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/8691cd14-d396-4884-8753-c5712f391c40)
+
+
 
 ```
 {
