@@ -90,6 +90,9 @@ INFO:     127.0.0.1:56416 - "GET / HTTP/1.1" 200 OK
 
 ## Post Method usage
 
+![Uploading Screenshot 2024-06-05 at 17.24.07.png…]()
+
+
 - added below data to the body for the `http://127.0.0.1:8000/createposts`  on the postman
 
 ```
