@@ -56,6 +56,9 @@ def printLogin():
     ]
 }
 ```
+![Screenshot 2024-06-05 at 18 19 28](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/cc0fb7bf-768d-49ab-b24c-16dc30e7cae1)
+
+
 
 ## Creating a POST method operation
 
