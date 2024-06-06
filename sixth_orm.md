@@ -5,6 +5,8 @@
 - Instead of manually defining the tables in the postgres, we can define our tables as python models
 - Queries can be made exclusively through python code, No SQL is necessary.
 
+![Screenshot 2024-06-06 at 13 35 40](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/51349be8-89fd-4c7b-b741-fbc75d8bd803)
+
 
 ## sqlalchemy
 
