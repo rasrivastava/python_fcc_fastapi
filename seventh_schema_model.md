@@ -1,5 +1,8 @@
 # Schema Model
 
+![Screenshot 2024-06-06 at 16 04 03](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/62da1b83-d968-4d2e-be64-f079f1e95640)
+
+
 - There can be time when we don't want to return all the proporties to the user and get need to show them specific properties basically the responce or return 
 
 - So, to handle this, we will updating the 
