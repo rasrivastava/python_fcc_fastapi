@@ -464,17 +464,12 @@ def update_post(id: int, updated_post: Post, db: Session = Depends(get_db)):
     return {"data": post_query.first()}
 ```
 
-- query `http://127.0.0.1:8000/posts/3` (put)
+- query `http://127.0.0.1:8000/posts/3` (put) --> to update
 
 ```
 {
-    "data": {
-        "published": true,
-        "title": "rasrivas.....updated title by PUT method",
-        "id": 3,
-        "created_at": "2021-11-15T19:57:22.514406+05:30",
-        "content": "content of post"
-    }
+    "title": "rasrivas.....updated title by PUT method",
+    "content": "content of post"
 }
 ```
 
