@@ -322,6 +322,17 @@ ALTER TABLE IF EXISTS public.products
 
 ![Screenshot 2024-06-06 at 00 48 32](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/68e2070a-73b9-4427-ba4c-1153b7b83503)
 
+
+
+![Screenshot 2024-06-27 at 20 13 12](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/520ecebb-0ac1-487f-b3dd-f16a59d7ff74)
+
+![Screenshot 2024-06-27 at 20 13 32](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/1e6e8862-c301-497d-bf07-b03f85fe6124)
+
+![Screenshot 2024-06-27 at 20 13 51](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/0ce0a5d6-612d-47e0-a31c-b4c3b1d23116)
+
+![Screenshot 2024-06-27 at 20 14 42](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/dc7e2e9c-3bfe-44e2-96aa-3a846c5ea1fa)
+![Screenshot 2024-06-27 at 20 15 01](https://github.com/rasrivastava/python_fcc_fastapi/assets/11652564/9d6c2762-8bed-4112-9fea-857b874342bb)
+
  
  ## Adding a record
  
